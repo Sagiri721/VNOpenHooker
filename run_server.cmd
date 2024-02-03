@@ -1,0 +1,1 @@
+.\createhook\x64\Release\host.exe 0

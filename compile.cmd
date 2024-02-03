@@ -1,0 +1,1 @@
+gcc injection.cpp -o evil.exe
