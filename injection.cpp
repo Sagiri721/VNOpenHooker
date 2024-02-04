@@ -8,10 +8,18 @@ char evilDLL[] = "D:\\TIAGO\\program\\text hooking\\vnhooker\\createhook\\Releas
 unsigned int evilLen = sizeof(evilDLL) + 1;
 
 int main(int argc, char* argv[]) {
+
+    if (argc != 3) {
+        printf("Usage: %s <PID> <DLLPath>\n", argv[0]);
+        exit(1);
+    }
     
     HANDLE ph; // process handle
     HANDLE rt; // remote thread
     LPVOID rb; // remote buffer
+
+    char* dllPath = argv[2];
+    unsigned int evilLen = strlen(dllPath) + 1;
 
     // handle to kernel32 and pass it to GetProcAddress
     HMODULE hKernel32 = GetModuleHandle("Kernel32");
@@ -19,7 +27,7 @@ int main(int argc, char* argv[]) {
 
     // parse process ID
     if (atoi(argv[1]) == 0) {
-        printf("PID not found :( exiting...\n");
+        printf("PID not found :(\n");
         return -1;
     }
 
