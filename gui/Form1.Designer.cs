@@ -30,6 +30,9 @@
         {
             splitContainer1 = new SplitContainer();
             panel1 = new Panel();
+            button9 = new Button();
+            label6 = new Label();
+            macroCollection = new ComboBox();
             button8 = new Button();
             button7 = new Button();
             tracker = new Label();
@@ -60,6 +63,7 @@
             openToolStripMenuItem = new ToolStripMenuItem();
             addGameToolStripMenuItem = new ToolStripMenuItem();
             reloadToolStripMenuItem = new ToolStripMenuItem();
+            checkBox2 = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -90,6 +94,10 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(checkBox2);
+            panel1.Controls.Add(button9);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(macroCollection);
             panel1.Controls.Add(button8);
             panel1.Controls.Add(button7);
             panel1.Controls.Add(tracker);
@@ -107,6 +115,36 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(289, 612);
             panel1.TabIndex = 0;
+            // 
+            // button9
+            // 
+            button9.Location = new Point(187, 484);
+            button9.Name = "button9";
+            button9.Size = new Size(96, 23);
+            button9.TabIndex = 20;
+            button9.Text = "Execute";
+            button9.UseVisualStyleBackColor = true;
+            button9.Click += button9_Click;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            label6.Location = new Point(3, 466);
+            label6.Name = "label6";
+            label6.Size = new Size(94, 15);
+            label6.TabIndex = 19;
+            label6.Text = "macros + scripts";
+            // 
+            // macroCollection
+            // 
+            macroCollection.AllowDrop = true;
+            macroCollection.DropDownStyle = ComboBoxStyle.DropDownList;
+            macroCollection.FormattingEnabled = true;
+            macroCollection.Location = new Point(0, 484);
+            macroCollection.Name = "macroCollection";
+            macroCollection.Size = new Size(181, 23);
+            macroCollection.TabIndex = 18;
             // 
             // button8
             // 
@@ -157,12 +195,13 @@
             // 
             // button3
             // 
-            button3.Location = new Point(0, 397);
+            button3.Location = new Point(0, 422);
             button3.Name = "button3";
             button3.Size = new Size(283, 30);
             button3.TabIndex = 12;
             button3.Text = "Inject DLL";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // label4
             // 
@@ -307,7 +346,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.Location = new Point(7, 3);
+            label1.Location = new Point(0, 3);
             label1.Name = "label1";
             label1.Size = new Size(63, 25);
             label1.TabIndex = 1;
@@ -377,6 +416,16 @@
             reloadToolStripMenuItem.Text = "Reload";
             reloadToolStripMenuItem.Click += reloadToolStripMenuItem_Click;
             // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new Point(7, 397);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(197, 19);
+            checkBox2.TabIndex = 21;
+            checkBox2.Text = "recompile injector automatically";
+            checkBox2.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -440,5 +489,9 @@
         private Label tracker;
         private Label label5;
         private PictureBox pictureBox1;
+        private Label label6;
+        private ComboBox macroCollection;
+        private Button button9;
+        private CheckBox checkBox2;
     }
 }

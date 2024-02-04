@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace gui
 {
@@ -13,7 +14,7 @@ namespace gui
         Task fileMonitoringThread = null, processTrackingThread = null;
         static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        List<string>[] libraryPathMemory = new[] { new List<string>(), new List<string>() };
+        List<string>[] libraryPathMemory = new[] { new List<string>(), new List<string>(), new List<string>() };
 
         static TrackingProcess trackingProcess = new TrackingProcess();
 
@@ -34,6 +35,8 @@ namespace gui
             // Start threads
             button5_Click(sender, e);
             StartProcessTracking();
+
+            macroCollection.SelectedIndex = 0;
         }
 
         private async void StartProcessTracking()
@@ -48,6 +51,7 @@ namespace gui
             // Clear previous information
             gameCollection.Items.Clear();
             dllCollection.Items.Clear();
+            macroCollection.Items.Clear();
 
             foreach (var collection in libraryPathMemory) { collection.Clear(); }
 
@@ -73,17 +77,33 @@ namespace gui
                 libraryPathMemory[0].Add(fileName);
             }
 
-            foreach (string fileName in Directory.GetFiles(DLL_LIBRARY))
+            List<string> completeFiles = Directory.GetFiles(DLL_LIBRARY).ToList();
+            completeFiles.AddRange(Directory.GetFiles(SOURCE).ToList());
+
+            foreach (string fileName in completeFiles)
             {
+
                 // Get File information
                 FileInfo fileInfo = new FileInfo(fileName);
                 string name = fileInfo.Name;
 
                 //Skip unwanted files
-                if (fileInfo.Extension != ".dll") continue;
+                switch (fileInfo.Extension)
+                {
+                    case ".dll":
+                        dllCollection.Items.Add(name);
+                        libraryPathMemory[1].Add(fileName);
+                        break;
 
-                dllCollection.Items.Add(name);
-                libraryPathMemory[1].Add(fileName);
+                    case ".cmd":
+                    case ".bat":
+                    case ".btm":
+                    case ".sh":
+                        macroCollection.Items.Add(name);
+                        libraryPathMemory[2].Add(fileName);
+                        break;
+                }
+
             }
 
             toolStripStatusLabel1.Text = "Libraries loaded";
@@ -215,6 +235,106 @@ namespace gui
         private void button7_Click(object sender, EventArgs e)
         {
             /* TODO process selection screen */
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            // Check for tracked process
+            if (trackingProcess.path == null)
+            {
+                MessageBox.Show("Start tracking a process before injecting", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if(dllCollection.SelectedIndex == -1)
+            {
+                MessageBox.Show("Select a dll to inject first", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Inject the dll
+            //Recompile the injector
+            if (checkBox2.Checked) RunMacro("compile_injector.cmd", true);
+            // Run the executable
+            using (Process proc = new Process())
+            {
+
+                proc.StartInfo.FileName = "evil.exe";
+                proc.StartInfo.WorkingDirectory = SOURCE;
+                proc.StartInfo.ArgumentList.Add(trackingProcess.PID.ToString());
+                proc.StartInfo.ArgumentList.Add(" \"" + libraryPathMemory[1][dllCollection.SelectedIndex] + "\"");
+
+                proc.StartInfo.UseShellExecute = true;
+                proc.Start();
+
+                proc.WaitForExit();
+            }
+        }
+
+        private void RunMacro(string name, bool wait)
+        {
+            int index = -1;
+            for(int i = 0; i < macroCollection.Items.Count; i++)
+            {
+                if (macroCollection.Items[i].Equals(name))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if(index == -1)
+            {
+                MessageBox.Show("No macro found", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string scriptPath = libraryPathMemory[2][index];
+            if (!string.IsNullOrEmpty(scriptPath) && File.Exists(scriptPath))
+            {
+
+                using (Process proc = new Process())
+                {
+
+                    proc.StartInfo.FileName = macroCollection.SelectedItem.ToString();
+                    proc.StartInfo.WorkingDirectory = Path.GetDirectoryName(scriptPath);
+
+                    proc.StartInfo.UseShellExecute = true;
+                    proc.StartInfo.CreateNoWindow = false;
+                    proc.Start();
+
+                    if(wait) proc.WaitForExit();
+                }
+            }
+
+            toolStripStatusLabel1.Text = "Runnning " + scriptPath;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if (macroCollection.SelectedIndex == -1)
+            {
+                MessageBox.Show("Select a script first", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string scriptPath = libraryPathMemory[2][macroCollection.SelectedIndex];
+            if (!string.IsNullOrEmpty(scriptPath) && File.Exists(scriptPath))
+            {
+
+                using (Process proc = new Process())
+                {
+
+                    proc.StartInfo.FileName = macroCollection.SelectedItem.ToString();
+                    proc.StartInfo.WorkingDirectory = Path.GetDirectoryName(scriptPath);
+
+                    proc.StartInfo.UseShellExecute = true;
+                    proc.StartInfo.CreateNoWindow = false;
+                    proc.Start();
+                }
+            }
+
+            toolStripStatusLabel1.Text = "Runnning " + scriptPath;
         }
     }
 }
