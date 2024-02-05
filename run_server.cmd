@@ -1,1 +1,1 @@
-.\createhook\x64\Release\host.exe 0
+node server/server.js

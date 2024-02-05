@@ -25,6 +25,7 @@ namespace gui
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
             label1.Text = "Reading from: " + READ_FILE;
 
@@ -246,7 +247,7 @@ namespace gui
                 return;
             }
 
-            if(dllCollection.SelectedIndex == -1)
+            if (dllCollection.SelectedIndex == -1)
             {
                 MessageBox.Show("Select a dll to inject first", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -274,7 +275,7 @@ namespace gui
         private void RunMacro(string name, bool wait)
         {
             int index = -1;
-            for(int i = 0; i < macroCollection.Items.Count; i++)
+            for (int i = 0; i < macroCollection.Items.Count; i++)
             {
                 if (macroCollection.Items[i].Equals(name))
                 {
@@ -283,7 +284,7 @@ namespace gui
                 }
             }
 
-            if(index == -1)
+            if (index == -1)
             {
                 MessageBox.Show("No macro found", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -303,7 +304,7 @@ namespace gui
                     proc.StartInfo.CreateNoWindow = false;
                     proc.Start();
 
-                    if(wait) proc.WaitForExit();
+                    if (wait) proc.WaitForExit();
                 }
             }
 

@@ -30,6 +30,7 @@
         {
             splitContainer1 = new SplitContainer();
             panel1 = new Panel();
+            checkBox2 = new CheckBox();
             button9 = new Button();
             label6 = new Label();
             macroCollection = new ComboBox();
@@ -63,7 +64,6 @@
             openToolStripMenuItem = new ToolStripMenuItem();
             addGameToolStripMenuItem = new ToolStripMenuItem();
             reloadToolStripMenuItem = new ToolStripMenuItem();
-            checkBox2 = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -115,6 +115,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(289, 612);
             panel1.TabIndex = 0;
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new Point(7, 397);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(197, 19);
+            checkBox2.TabIndex = 21;
+            checkBox2.Text = "recompile injector automatically";
+            checkBox2.UseVisualStyleBackColor = true;
             // 
             // button9
             // 
@@ -415,16 +425,6 @@
             reloadToolStripMenuItem.Size = new Size(129, 22);
             reloadToolStripMenuItem.Text = "Reload";
             reloadToolStripMenuItem.Click += reloadToolStripMenuItem_Click;
-            // 
-            // checkBox2
-            // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(7, 397);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(197, 19);
-            checkBox2.TabIndex = 21;
-            checkBox2.Text = "recompile injector automatically";
-            checkBox2.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
