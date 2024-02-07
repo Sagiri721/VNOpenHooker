@@ -1,15 +1,17 @@
 using System.Diagnostics;
-using System.Security.Cryptography;
+using System.Windows.Forms;
+using IWshRuntimeLibrary; /*Windows Script Host Object Model*/
 
 namespace gui
 {
 
     public partial class Form1 : Form
     {
-        const string SOURCE = "D:\\TIAGO\\program\\text hooking\\vnhooker";
+        public static string SOURCE = "D:\\TIAGO\\program\\text hooking\\vnhooker";
+        public static int SHIFT_JIS_ENCODING = 932;
+
         const string DLL_LIBRARY = "D:\\TIAGO\\program\\text hooking\\vnhooker\\createhook\\Release";
         const string READ_FILE = "D:\\TIAGO\\program\\text hooking\\vnhooker\\out.txt";
-        const int SHIFT_JIS_ENCODING = 932;
 
         Task fileMonitoringThread = null, processTrackingThread = null;
         static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -27,14 +29,12 @@ namespace gui
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
-            label1.Text = "Reading from: " + READ_FILE;
-
             // Load game library
             LoadLibraries();
             checkBox1.Checked = true;
 
             // Start threads
-            button5_Click(sender, e);
+            Connection.LoadSettings();
             StartProcessTracking();
 
             macroCollection.SelectedIndex = 0;
@@ -56,7 +56,7 @@ namespace gui
 
             foreach (var collection in libraryPathMemory) { collection.Clear(); }
 
-            const string gameLib = SOURCE + "\\library";
+            string gameLib = SOURCE + "\\library";
             foreach (string fileName in Directory.GetFiles(gameLib))
             {
 
@@ -80,6 +80,7 @@ namespace gui
 
             List<string> completeFiles = Directory.GetFiles(DLL_LIBRARY).ToList();
             completeFiles.AddRange(Directory.GetFiles(SOURCE).ToList());
+            completeFiles.AddRange(Directory.GetFiles(SOURCE + "\\macros").ToList());
 
             foreach (string fileName in completeFiles)
             {
@@ -113,7 +114,7 @@ namespace gui
         async void MonitorFileChanges(CancellationTokenSource token)
         {
             using (var fileStream = new FileStream(READ_FILE, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var reader = new StreamReader(fileStream, System.Text.Encoding.GetEncoding(SHIFT_JIS_ENCODING)))
+            using (var reader = new StreamReader(fileStream, System.Text.Encoding.UTF8))
             {
                 while (!token.IsCancellationRequested)
                 {
@@ -128,31 +129,38 @@ namespace gui
 
         private void button4_Click(object sender, EventArgs e)
         {
-            File.WriteAllText(READ_FILE, string.Empty);
+            //File.WriteAllText(READ_FILE, string.Empty);
+            textMonitor.Clear();
             toolStripStatusLabel1.Text = "Output stream is clean";
         }
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            if (!cancellationTokenSource.IsCancellationRequested && fileMonitoringThread != null)
-            {
-                MessageBox.Show("Task is still running");
-                return;
-            }
-
+            /*
             // File monitoring
             fileMonitoringThread = Task.Run(() => MonitorFileChanges(cancellationTokenSource));
+            */
+
+            Connection.Connect(toolStripStatusLabel1, conn, textMonitor);
+
+            if (Connection.tcpClient != null)
+            {
+                close.Enabled = true;
+                open.Enabled = false;
+            }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (cancellationTokenSource.IsCancellationRequested)
-            {
-                MessageBox.Show("Already canceled");
-                return;
-            }
+            //cancellationTokenSource.Cancel();
 
-            cancellationTokenSource.Cancel();
+            Connection.Close(conn);
+
+            if (Connection.tcpClient == null)
+            {
+                close.Enabled = false;
+                open.Enabled = true;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -183,7 +191,7 @@ namespace gui
             string gamePath = libraryPathMemory[0][gameCollection.SelectedIndex];
             int pid = 0;
 
-            if (!string.IsNullOrEmpty(gamePath) && File.Exists(gamePath))
+            if (!string.IsNullOrEmpty(gamePath) && System.IO.File.Exists(gamePath))
             {
 
                 using (Process proc = new Process())
@@ -272,43 +280,44 @@ namespace gui
             }
         }
 
-        private void RunMacro(string name, bool wait)
+        private int RunMacro(string name, bool wait)
         {
-            int index = -1;
+            string scriptPath = "";
             for (int i = 0; i < macroCollection.Items.Count; i++)
             {
                 if (macroCollection.Items[i].Equals(name))
                 {
-                    index = i;
+                    scriptPath = libraryPathMemory[2][i];
                     break;
                 }
             }
 
-            if (index == -1)
-            {
-                MessageBox.Show("No macro found", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            string scriptPath = libraryPathMemory[2][index];
-            if (!string.IsNullOrEmpty(scriptPath) && File.Exists(scriptPath))
+            int pid = 0;
+            if (!string.IsNullOrEmpty(scriptPath) && System.IO.File.Exists(scriptPath))
             {
 
                 using (Process proc = new Process())
                 {
 
-                    proc.StartInfo.FileName = macroCollection.SelectedItem.ToString();
+                    proc.StartInfo.FileName = new FileInfo(scriptPath).Name;
                     proc.StartInfo.WorkingDirectory = Path.GetDirectoryName(scriptPath);
 
                     proc.StartInfo.UseShellExecute = true;
                     proc.StartInfo.CreateNoWindow = false;
                     proc.Start();
+                    pid = proc.Id;
 
                     if (wait) proc.WaitForExit();
                 }
             }
+            else
+            {
+                MessageBox.Show("No macro found", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
 
             toolStripStatusLabel1.Text = "Runnning " + scriptPath;
+            return pid;
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -320,7 +329,7 @@ namespace gui
             }
 
             string scriptPath = libraryPathMemory[2][macroCollection.SelectedIndex];
-            if (!string.IsNullOrEmpty(scriptPath) && File.Exists(scriptPath))
+            if (!string.IsNullOrEmpty(scriptPath) && System.IO.File.Exists(scriptPath))
             {
 
                 using (Process proc = new Process())
@@ -336,6 +345,56 @@ namespace gui
             }
 
             toolStripStatusLabel1.Text = "Runnning " + scriptPath;
+        }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RunMacro("run_server.cmd", false);
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var uri = @"https://www.nodejs.org/en";
+            var psi = new ProcessStartInfo();
+            psi.UseShellExecute = true;
+            psi.FileName = uri;
+            Process.Start(psi);
+        }
+
+        private void addGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog gameSelect = new OpenFileDialog();
+            /* Define settings */
+            gameSelect.RestoreDirectory = true;
+            gameSelect.Title = "Select a game";
+            gameSelect.Filter = "exe files (*.exe)|*.exe";
+            
+            if(gameSelect.ShowDialog() == DialogResult.OK)
+            {
+                string copyTarget = gameSelect.FileName;
+
+                // Create shortcut
+                string shortcut = SOURCE + "\\library\\" + new FileInfo(copyTarget).Name + ".lnk";
+
+                // Why the fuck is creating windows shortcuts so complicated?
+                // Thankfully there is a very funny workaround for creating shortcuts
+
+                try
+                {
+                    var shell = new WshShell();
+                    IWshShortcut shrtct = (IWshShortcut)shell.CreateShortcut(shortcut);
+                    shrtct.TargetPath = copyTarget;
+                    shrtct.Save();
+
+                    toolStripStatusLabel1.Text = $"Shortcut created at: {shortcut}";
+                    LoadLibraries();
+
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Couldn't create the shortcut");
+                }
+            }
         }
     }
 }

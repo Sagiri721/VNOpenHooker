@@ -1,7 +1,7 @@
 import os;
-from subprocess import check_output
-import psutil
-import pyperclip
+from subprocess import check_output;
+import psutil;
+import pyperclip;
 import time;
 
 library = ".\\library";

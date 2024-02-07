@@ -30,6 +30,7 @@
         {
             splitContainer1 = new SplitContainer();
             panel1 = new Panel();
+            label7 = new Label();
             checkBox2 = new CheckBox();
             button9 = new Button();
             label6 = new Label();
@@ -48,13 +49,15 @@
             label3 = new Label();
             label2 = new Label();
             panel2 = new Panel();
-            button5 = new Button();
+            conn = new Label();
+            label1 = new Label();
+            linkLabel1 = new LinkLabel();
+            open = new Button();
             textMonitor = new RichTextBox();
             groupBox1 = new GroupBox();
             button6 = new Button();
             button4 = new Button();
-            button1 = new Button();
-            label1 = new Label();
+            close = new Button();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             menuStrip1 = new MenuStrip();
@@ -64,6 +67,8 @@
             openToolStripMenuItem = new ToolStripMenuItem();
             addGameToolStripMenuItem = new ToolStripMenuItem();
             reloadToolStripMenuItem = new ToolStripMenuItem();
+            serviceToolStripMenuItem = new ToolStripMenuItem();
+            startToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -94,6 +99,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(label7);
             panel1.Controls.Add(checkBox2);
             panel1.Controls.Add(button9);
             panel1.Controls.Add(label6);
@@ -116,6 +122,16 @@
             panel1.Size = new Size(289, 612);
             panel1.TabIndex = 0;
             // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.ForeColor = Color.Brown;
+            label7.Location = new Point(3, 455);
+            label7.Name = "label7";
+            label7.Size = new Size(260, 15);
+            label7.TabIndex = 22;
+            label7.Text = "Make sure the server is turned on when hooking";
+            // 
             // checkBox2
             // 
             checkBox2.AutoSize = true;
@@ -128,9 +144,9 @@
             // 
             // button9
             // 
-            button9.Location = new Point(187, 484);
+            button9.Location = new Point(187, 508);
             button9.Name = "button9";
-            button9.Size = new Size(96, 23);
+            button9.Size = new Size(96, 24);
             button9.TabIndex = 20;
             button9.Text = "Execute";
             button9.UseVisualStyleBackColor = true;
@@ -140,7 +156,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.Location = new Point(3, 466);
+            label6.Location = new Point(3, 490);
             label6.Name = "label6";
             label6.Size = new Size(94, 15);
             label6.TabIndex = 19;
@@ -151,7 +167,7 @@
             macroCollection.AllowDrop = true;
             macroCollection.DropDownStyle = ComboBoxStyle.DropDownList;
             macroCollection.FormattingEnabled = true;
-            macroCollection.Location = new Point(0, 484);
+            macroCollection.Location = new Point(0, 508);
             macroCollection.Name = "macroCollection";
             macroCollection.Size = new Size(181, 23);
             macroCollection.TabIndex = 18;
@@ -263,7 +279,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(3, 48);
+            label3.Location = new Point(3, 55);
             label3.Name = "label3";
             label3.Size = new Size(73, 15);
             label3.TabIndex = 6;
@@ -281,25 +297,57 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(button5);
+            panel2.Controls.Add(conn);
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(linkLabel1);
+            panel2.Controls.Add(open);
             panel2.Controls.Add(textMonitor);
             panel2.Controls.Add(groupBox1);
-            panel2.Controls.Add(button1);
-            panel2.Controls.Add(label1);
+            panel2.Controls.Add(close);
             panel2.Location = new Point(3, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(585, 612);
             panel2.TabIndex = 0;
             // 
-            // button5
+            // conn
             // 
-            button5.Location = new Point(7, 546);
-            button5.Name = "button5";
-            button5.Size = new Size(157, 54);
-            button5.TabIndex = 10;
-            button5.Text = "Start monitoring thread";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            conn.AutoSize = true;
+            conn.ForeColor = Color.Red;
+            conn.Location = new Point(126, 25);
+            conn.Name = "conn";
+            conn.Size = new Size(43, 15);
+            conn.TabIndex = 13;
+            conn.Text = "Closed";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(7, 25);
+            label1.Name = "label1";
+            label1.Size = new Size(103, 15);
+            label1.TabIndex = 12;
+            label1.Text = "Connection status";
+            // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.Location = new Point(7, 3);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(197, 15);
+            linkLabel1.TabIndex = 11;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "You need Node.js to run the server!!!";
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
+            // open
+            // 
+            open.Location = new Point(7, 546);
+            open.Name = "open";
+            open.Size = new Size(157, 54);
+            open.TabIndex = 10;
+            open.Text = "Connect to TCP server";
+            open.UseVisualStyleBackColor = true;
+            open.Click += button5_Click;
             // 
             // textMonitor
             // 
@@ -342,25 +390,16 @@
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
-            // button1
+            // close
             // 
-            button1.Location = new Point(170, 546);
-            button1.Name = "button1";
-            button1.Size = new Size(157, 54);
-            button1.TabIndex = 3;
-            button1.Text = "End monitoring thread";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click_1;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.Location = new Point(0, 3);
-            label1.Name = "label1";
-            label1.Size = new Size(63, 25);
-            label1.TabIndex = 1;
-            label1.Text = "label1";
+            close.Enabled = false;
+            close.Location = new Point(170, 546);
+            close.Name = "close";
+            close.Size = new Size(157, 54);
+            close.TabIndex = 3;
+            close.Text = "Close connection";
+            close.UseVisualStyleBackColor = true;
+            close.Click += button1_Click_1;
             // 
             // statusStrip1
             // 
@@ -378,7 +417,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, libraryToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, libraryToolStripMenuItem, serviceToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(910, 24);
@@ -395,7 +434,7 @@
             // closeToolStripMenuItem
             // 
             closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            closeToolStripMenuItem.Size = new Size(103, 22);
+            closeToolStripMenuItem.Size = new Size(180, 22);
             closeToolStripMenuItem.Text = "Close";
             closeToolStripMenuItem.Click += closeToolStripMenuItem_Click;
             // 
@@ -409,22 +448,37 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(129, 22);
+            openToolStripMenuItem.Size = new Size(180, 22);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // addGameToolStripMenuItem
             // 
             addGameToolStripMenuItem.Name = "addGameToolStripMenuItem";
-            addGameToolStripMenuItem.Size = new Size(129, 22);
+            addGameToolStripMenuItem.Size = new Size(180, 22);
             addGameToolStripMenuItem.Text = "Add game";
+            addGameToolStripMenuItem.Click += addGameToolStripMenuItem_Click;
             // 
             // reloadToolStripMenuItem
             // 
             reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            reloadToolStripMenuItem.Size = new Size(129, 22);
+            reloadToolStripMenuItem.Size = new Size(180, 22);
             reloadToolStripMenuItem.Text = "Reload";
             reloadToolStripMenuItem.Click += reloadToolStripMenuItem_Click;
+            // 
+            // serviceToolStripMenuItem
+            // 
+            serviceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { startToolStripMenuItem });
+            serviceToolStripMenuItem.Name = "serviceToolStripMenuItem";
+            serviceToolStripMenuItem.Size = new Size(56, 20);
+            serviceToolStripMenuItem.Text = "Service";
+            // 
+            // startToolStripMenuItem
+            // 
+            startToolStripMenuItem.Name = "startToolStripMenuItem";
+            startToolStripMenuItem.Size = new Size(180, 22);
+            startToolStripMenuItem.Text = "Start";
+            startToolStripMenuItem.Click += startToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -461,12 +515,11 @@
         private Panel panel1;
         private Label label2;
         private Panel panel2;
-        private Button button1;
-        private Label label1;
+        private Button close;
         private GroupBox groupBox1;
         private Button button4;
         private RichTextBox textMonitor;
-        private Button button5;
+        private Button open;
         private Button button6;
         private ListBox gameCollection;
         private Label label3;
@@ -493,5 +546,11 @@
         private ComboBox macroCollection;
         private Button button9;
         private CheckBox checkBox2;
+        private ToolStripMenuItem serviceToolStripMenuItem;
+        private ToolStripMenuItem startToolStripMenuItem;
+        private LinkLabel linkLabel1;
+        private Label conn;
+        private Label label1;
+        private Label label7;
     }
 }
