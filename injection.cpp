@@ -21,6 +21,8 @@ int main(int argc, char* argv[]) {
     char* dllPath = argv[2];
     unsigned int evilLen = strlen(dllPath) + 1;
 
+    printf(dllPath);
+
     // handle to kernel32 and pass it to GetProcAddress
     HMODULE hKernel32 = GetModuleHandle("Kernel32");
     FARPROC lb = GetProcAddress(hKernel32, "LoadLibraryA");

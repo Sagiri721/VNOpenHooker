@@ -1,6 +1,8 @@
 const net = require('net');
 const fs = require('fs');
 const iconv = require('iconv-lite');
+const sanitize = require('D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\basic_sanitizer.cjs');
+const sanitizeInput = require('D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\basic_sanitizer.cjs');
 
 var settings = JSON.parse(fs.readFileSync("D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\hosting_settings.json"));
 
@@ -8,6 +10,11 @@ const PORT = settings.port;
 const host = settings.host;
 
 var source = null;
+
+// Received chunks
+var datachunk = "";
+var lastRecieved = 0;
+var sendThreshold = 1500;
 
 const server = net.createServer((socket) => {
     
@@ -41,10 +48,34 @@ const server = net.createServer((socket) => {
 
 const onMessageReceive = (message, socket) => {
     
-    if(source == null) return;
+    if(source == null) return;    
+
+    datachunk += message;
+    lastRecieved = Date.now();
+
     // Send output to the reader
-    source.write(message);
+    //source.write(message);
 }
+
+const updateSendStatus = () => {
+
+    // Still waiting
+    if (lastRecieved == 0) return;
+
+    let msDiff = Date.now() - lastRecieved;
+    if(msDiff > sendThreshold){
+
+        // Sanitize data and send
+        const output = sanitizeInput(datachunk, settings.recognition);
+        source.write(output);
+
+        lastRecieved = 0;
+        datachunk = "";
+    }
+}
+
+// Listen for changes
+setInterval(updateSendStatus, sendThreshold / 10)
 
 // Start listening
 server.listen(PORT, host, () => {

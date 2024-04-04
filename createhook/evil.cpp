@@ -71,7 +71,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  nReason, LPVOID lpReserved) {
     }
 
     switch (nReason) {
+
         case DLL_PROCESS_ATTACH:
+
             MessageBoxA(
                 NULL,
                 "Meow from evil.dll!",

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
 using IWshRuntimeLibrary; /*Windows Script Host Object Model*/
 
 namespace gui
@@ -10,7 +11,7 @@ namespace gui
         public static string SOURCE = "D:\\TIAGO\\program\\text hooking\\vnhooker";
         public static int SHIFT_JIS_ENCODING = 932;
 
-        const string DLL_LIBRARY = "D:\\TIAGO\\program\\text hooking\\vnhooker\\createhook\\Release";
+        const string DLL_LIBRARY = "D:\\TIAGO\\program\\text hooking\\vnhooker\\dlls";
         const string READ_FILE = "D:\\TIAGO\\program\\text hooking\\vnhooker\\out.txt";
 
         Task fileMonitoringThread = null, processTrackingThread = null;
@@ -61,9 +62,8 @@ namespace gui
             {
 
                 // Get File information
-                FileInfo fileInfo = new FileInfo(fileName);
-                string name = fileInfo.Name;
-                if (fileInfo.Name.Contains(" - Shortcut"))
+                string name = Path.GetFileName(fileName);
+                if (name.Contains(" - Shortcut"))
                 {
                     // Clean file name
                     name = name.Replace(" - Shortcut", "");
@@ -78,22 +78,29 @@ namespace gui
                 libraryPathMemory[0].Add(fileName);
             }
 
-            List<string> completeFiles = Directory.GetFiles(DLL_LIBRARY).ToList();
-            completeFiles.AddRange(Directory.GetFiles(SOURCE).ToList());
+            List<string> completeFiles = Directory.GetFiles(DLL_LIBRARY, "*.dll", SearchOption.AllDirectories).ToList();
+
+            // Dear future me
+            // This should not be done like this
+            // Please stop being retarded and fix the locations of dlls
+            completeFiles.AddRange(Directory.GetFiles(SOURCE + "\\createhook", "*.dll", SearchOption.AllDirectories).ToList());
+
+            // This is fine I think
             completeFiles.AddRange(Directory.GetFiles(SOURCE + "\\macros").ToList());
 
             foreach (string fileName in completeFiles)
             {
+                if (fileName == null || fileName.Length == 0) continue;
 
                 // Get File information
-                FileInfo fileInfo = new FileInfo(fileName);
-                string name = fileInfo.Name;
+                string name = Path.GetFileName(fileName);
+                string parentDirectory = new DirectoryInfo(Path.GetDirectoryName(fileName)).Name;
 
                 //Skip unwanted files
-                switch (fileInfo.Extension)
+                switch (Path.GetExtension(fileName))
                 {
                     case ".dll":
-                        dllCollection.Items.Add(name);
+                        dllCollection.Items.Add(parentDirectory + "/" + name);
                         libraryPathMemory[1].Add(fileName);
                         break;
 
@@ -267,7 +274,6 @@ namespace gui
             // Run the executable
             using (Process proc = new Process())
             {
-
                 proc.StartInfo.FileName = "evil.exe";
                 proc.StartInfo.WorkingDirectory = SOURCE;
                 proc.StartInfo.ArgumentList.Add(trackingProcess.PID.ToString());
@@ -277,6 +283,7 @@ namespace gui
                 proc.Start();
 
                 proc.WaitForExit();
+                toolStripStatusLabel1.Text = ("DLL injected! Brace yourself! Your game might crash");
             }
         }
 
@@ -368,8 +375,8 @@ namespace gui
             gameSelect.RestoreDirectory = true;
             gameSelect.Title = "Select a game";
             gameSelect.Filter = "exe files (*.exe)|*.exe";
-            
-            if(gameSelect.ShowDialog() == DialogResult.OK)
+
+            if (gameSelect.ShowDialog() == DialogResult.OK)
             {
                 string copyTarget = gameSelect.FileName;
 
@@ -390,10 +397,25 @@ namespace gui
                     LoadLibraries();
 
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Couldn't create the shortcut");
                 }
+            }
+        }
+
+        private void createShortcutGUIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string scriptPath = SOURCE + "\\createhook\\LEShortcutCreator.cmd";
+
+            using (Process proc = new Process())
+            {
+                proc.StartInfo.FileName = new FileInfo(scriptPath).Name;
+                proc.StartInfo.WorkingDirectory = Path.GetDirectoryName(scriptPath);
+
+                proc.StartInfo.UseShellExecute = true;
+                proc.StartInfo.CreateNoWindow = false;
+                proc.Start();
             }
         }
     }

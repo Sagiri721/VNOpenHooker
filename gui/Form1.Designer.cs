@@ -49,9 +49,9 @@
             label3 = new Label();
             label2 = new Label();
             panel2 = new Panel();
+            label8 = new Label();
             conn = new Label();
             label1 = new Label();
-            linkLabel1 = new LinkLabel();
             open = new Button();
             textMonitor = new RichTextBox();
             groupBox1 = new GroupBox();
@@ -69,6 +69,9 @@
             reloadToolStripMenuItem = new ToolStripMenuItem();
             serviceToolStripMenuItem = new ToolStripMenuItem();
             startToolStripMenuItem = new ToolStripMenuItem();
+            localeEmulatorToolStripMenuItem = new ToolStripMenuItem();
+            createShortcutGUIToolStripMenuItem = new ToolStripMenuItem();
+            ankiToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -297,9 +300,9 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(label8);
             panel2.Controls.Add(conn);
             panel2.Controls.Add(label1);
-            panel2.Controls.Add(linkLabel1);
             panel2.Controls.Add(open);
             panel2.Controls.Add(textMonitor);
             panel2.Controls.Add(groupBox1);
@@ -308,6 +311,16 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(585, 612);
             panel2.TabIndex = 0;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            label8.Location = new Point(7, 0);
+            label8.Name = "label8";
+            label8.Size = new Size(295, 21);
+            label8.TabIndex = 14;
+            label8.Text = "Be patient or the data might not come!";
             // 
             // conn
             // 
@@ -327,17 +340,6 @@
             label1.Size = new Size(103, 15);
             label1.TabIndex = 12;
             label1.Text = "Connection status";
-            // 
-            // linkLabel1
-            // 
-            linkLabel1.AutoSize = true;
-            linkLabel1.Location = new Point(7, 3);
-            linkLabel1.Name = "linkLabel1";
-            linkLabel1.Size = new Size(197, 15);
-            linkLabel1.TabIndex = 11;
-            linkLabel1.TabStop = true;
-            linkLabel1.Text = "You need Node.js to run the server!!!";
-            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
             // 
             // open
             // 
@@ -417,7 +419,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, libraryToolStripMenuItem, serviceToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, libraryToolStripMenuItem, serviceToolStripMenuItem, localeEmulatorToolStripMenuItem, ankiToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(910, 24);
@@ -434,7 +436,7 @@
             // closeToolStripMenuItem
             // 
             closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            closeToolStripMenuItem.Size = new Size(180, 22);
+            closeToolStripMenuItem.Size = new Size(103, 22);
             closeToolStripMenuItem.Text = "Close";
             closeToolStripMenuItem.Click += closeToolStripMenuItem_Click;
             // 
@@ -448,21 +450,21 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(180, 22);
+            openToolStripMenuItem.Size = new Size(129, 22);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // addGameToolStripMenuItem
             // 
             addGameToolStripMenuItem.Name = "addGameToolStripMenuItem";
-            addGameToolStripMenuItem.Size = new Size(180, 22);
+            addGameToolStripMenuItem.Size = new Size(129, 22);
             addGameToolStripMenuItem.Text = "Add game";
             addGameToolStripMenuItem.Click += addGameToolStripMenuItem_Click;
             // 
             // reloadToolStripMenuItem
             // 
             reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            reloadToolStripMenuItem.Size = new Size(180, 22);
+            reloadToolStripMenuItem.Size = new Size(129, 22);
             reloadToolStripMenuItem.Text = "Reload";
             reloadToolStripMenuItem.Click += reloadToolStripMenuItem_Click;
             // 
@@ -476,9 +478,29 @@
             // startToolStripMenuItem
             // 
             startToolStripMenuItem.Name = "startToolStripMenuItem";
-            startToolStripMenuItem.Size = new Size(180, 22);
+            startToolStripMenuItem.Size = new Size(98, 22);
             startToolStripMenuItem.Text = "Start";
             startToolStripMenuItem.Click += startToolStripMenuItem_Click;
+            // 
+            // localeEmulatorToolStripMenuItem
+            // 
+            localeEmulatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createShortcutGUIToolStripMenuItem });
+            localeEmulatorToolStripMenuItem.Name = "localeEmulatorToolStripMenuItem";
+            localeEmulatorToolStripMenuItem.Size = new Size(104, 20);
+            localeEmulatorToolStripMenuItem.Text = "Locale emulator";
+            // 
+            // createShortcutGUIToolStripMenuItem
+            // 
+            createShortcutGUIToolStripMenuItem.Name = "createShortcutGUIToolStripMenuItem";
+            createShortcutGUIToolStripMenuItem.Size = new Size(180, 22);
+            createShortcutGUIToolStripMenuItem.Text = "Create shortcut GUI";
+            createShortcutGUIToolStripMenuItem.Click += createShortcutGUIToolStripMenuItem_Click;
+            // 
+            // ankiToolStripMenuItem
+            // 
+            ankiToolStripMenuItem.Name = "ankiToolStripMenuItem";
+            ankiToolStripMenuItem.Size = new Size(43, 20);
+            ankiToolStripMenuItem.Text = "Anki";
             // 
             // Form1
             // 
@@ -548,9 +570,12 @@
         private CheckBox checkBox2;
         private ToolStripMenuItem serviceToolStripMenuItem;
         private ToolStripMenuItem startToolStripMenuItem;
-        private LinkLabel linkLabel1;
         private Label conn;
         private Label label1;
         private Label label7;
+        private Label label8;
+        private ToolStripMenuItem localeEmulatorToolStripMenuItem;
+        private ToolStripMenuItem createShortcutGUIToolStripMenuItem;
+        private ToolStripMenuItem ankiToolStripMenuItem;
     }
 }

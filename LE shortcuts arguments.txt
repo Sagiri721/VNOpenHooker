@@ -1,0 +1,28 @@
+Source code: https://github.com/Svintooo/LEShortcutCreator/blob/master/LEShortcutCreator.cmd
+Much love to Svintooo <3
+
+Could have suplied some better docs than code comments, but we take what can get
+
+PARAMETERS
+
+-Target,              # Mandatory
+-TargetArgs,
+-LocaleEmulatorPath,  # Mandatory
+-LanguageName,
+-LanguageID,          # Mandatory
+-ShortcutFilePath,    # Mandatory
+-WorkingDirectory
+
+Target should be an absolute path it seems
+
+Path + language Id on settings.json
+
+I just assume the language ids are
+0 for Japanese
+1 for Japanese (Admin)
+
+ShortcutFilePath is mandatory?
+
+EXAMPLE
+
+LEShortcutCreator.cmd "D:\TIAGO\game\visual novel\hs7740_MOEK\Moekan.exe" -LocaleEmulatorPath "D:\TIAGO\game\Locale.Emulator.2.5.0.1" -LanguageID "Japanese" -ShortcutFilePath "D:\TIAGO\program\text hooking\vnhooker\moekan"

@@ -1,3 +1,4 @@
 cd ..
-node server/server.js
+cd server
+node server.js
 pause

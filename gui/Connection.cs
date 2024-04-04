@@ -27,11 +27,14 @@ namespace gui
         public static byte[] SEND_ORIGIN = {69};
 
         private static SettingsS settings;
-        public static SettingsS Settings { get; set; }
+        public static SettingsS Settings { get { return settings; } set { settings = value; } }
 
         public static TcpClient tcpClient = null;
 
-        private static string file = Form1.SOURCE + "\\server\\hosting_settings.json";
+        private static string file = Form1.SOURCE + "\\settings.json";
+        private static bool isConnected = false;
+        public bool IsConnected { get { return isConnected; } set { isConnected = value; } }
+
         public static void LoadSettings()
         {
             try
@@ -67,8 +70,11 @@ namespace gui
 
                 tcpClient.Client.Send(SEND_ORIGIN);
 
+                isConnected = true;
+
                 // Start a separate thread to continuously read messages
                 Task.Run(() => ReceiveMessages(textMonitor));
+                Task.Run(() => CheckConnection());
 
             }
             catch(Exception e)
@@ -78,6 +84,24 @@ namespace gui
                 MessageBox.Show("Could not connect to server", "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 MessageBox.Show(e.Message, "SYSTEM", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+        }
+
+        private static async Task CheckConnection()
+        {
+            while (true)
+            {
+                if (isConnected)
+                {
+
+                    bool conn = IsListening();
+                }
+                else
+                {
+                    MessageBox.Show("Server is not connected");
+                }
+
+                Task.Delay(8000).Wait();
             }
         }
 
@@ -118,6 +142,29 @@ namespace gui
 
             conn.Text = "Closed";
             conn.ForeColor = Color.Red;
+
+            isConnected = false;
+        }
+
+        private static bool IsListening()
+        {
+
+            using (TcpClient client = new TcpClient())
+            {
+                if (settings.host == null) LoadSettings();
+                if (settings.host == null) settings = new SettingsS(8080, "127.0.0.1");
+
+                try
+                {
+                    client.Connect(settings.host, settings.port);
+                }
+                catch (SocketException)
+                {
+                    return false;
+                }
+                client.Close();
+                return true;
+            }
         }
     }
 }
