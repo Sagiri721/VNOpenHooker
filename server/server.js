@@ -4,7 +4,7 @@ const iconv = require('iconv-lite');
 const sanitize = require('D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\basic_sanitizer.cjs');
 const sanitizeInput = require('D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\basic_sanitizer.cjs');
 
-var settings = JSON.parse(fs.readFileSync("D:\\TIAGO\\program\\text hooking\\vnhooker\\server\\hosting_settings.json"));
+var settings = JSON.parse(fs.readFileSync("D:\\TIAGO\\program\\text hooking\\vnhooker\\settings.json"));
 
 const PORT = settings.port;
 const host = settings.host;
@@ -64,6 +64,11 @@ const updateSendStatus = () => {
 
     let msDiff = Date.now() - lastRecieved;
     if(msDiff > sendThreshold){
+
+        // First capture the header
+        const header_pattern = /\{head:(.*?):end\}/;
+        const head = datachunk.match(header_pattern)[1];
+        console.log(head);
 
         // Sanitize data and send
         const output = sanitizeInput(datachunk, settings.recognition);

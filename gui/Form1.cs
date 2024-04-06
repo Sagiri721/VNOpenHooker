@@ -39,6 +39,11 @@ namespace gui
             StartProcessTracking();
 
             macroCollection.SelectedIndex = 0;
+
+            // Check if leemu exists
+            if (!System.IO.File.Exists(SOURCE + "\\createhook\\LEShortcutCreator.cmd")) {
+                redownloadApplicationToolStripMenuItem.PerformClick();
+            }
         }
 
         private async void StartProcessTracking()
@@ -411,7 +416,22 @@ namespace gui
             using (Process proc = new Process())
             {
                 proc.StartInfo.FileName = new FileInfo(scriptPath).Name;
-                proc.StartInfo.WorkingDirectory = Path.GetDirectoryName(scriptPath);
+                proc.StartInfo.WorkingDirectory = SOURCE;
+
+                proc.StartInfo.UseShellExecute = true;
+                proc.StartInfo.CreateNoWindow = false;
+                proc.Start();
+            }
+        }
+
+        private void redownloadApplicationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string scriptPath = SOURCE + "\\macros\\download_local_emulator_script.cmd";
+
+            using (Process proc = new Process())
+            {
+                proc.StartInfo.FileName = new FileInfo(scriptPath).Name;
+                proc.StartInfo.WorkingDirectory = SOURCE;
 
                 proc.StartInfo.UseShellExecute = true;
                 proc.StartInfo.CreateNoWindow = false;

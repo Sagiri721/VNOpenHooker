@@ -72,6 +72,7 @@
             localeEmulatorToolStripMenuItem = new ToolStripMenuItem();
             createShortcutGUIToolStripMenuItem = new ToolStripMenuItem();
             ankiToolStripMenuItem = new ToolStripMenuItem();
+            redownloadApplicationToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -484,7 +485,7 @@
             // 
             // localeEmulatorToolStripMenuItem
             // 
-            localeEmulatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createShortcutGUIToolStripMenuItem });
+            localeEmulatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createShortcutGUIToolStripMenuItem, redownloadApplicationToolStripMenuItem });
             localeEmulatorToolStripMenuItem.Name = "localeEmulatorToolStripMenuItem";
             localeEmulatorToolStripMenuItem.Size = new Size(104, 20);
             localeEmulatorToolStripMenuItem.Text = "Locale emulator";
@@ -492,7 +493,7 @@
             // createShortcutGUIToolStripMenuItem
             // 
             createShortcutGUIToolStripMenuItem.Name = "createShortcutGUIToolStripMenuItem";
-            createShortcutGUIToolStripMenuItem.Size = new Size(180, 22);
+            createShortcutGUIToolStripMenuItem.Size = new Size(202, 22);
             createShortcutGUIToolStripMenuItem.Text = "Create shortcut GUI";
             createShortcutGUIToolStripMenuItem.Click += createShortcutGUIToolStripMenuItem_Click;
             // 
@@ -501,6 +502,13 @@
             ankiToolStripMenuItem.Name = "ankiToolStripMenuItem";
             ankiToolStripMenuItem.Size = new Size(43, 20);
             ankiToolStripMenuItem.Text = "Anki";
+            // 
+            // redownloadApplicationToolStripMenuItem
+            // 
+            redownloadApplicationToolStripMenuItem.Name = "redownloadApplicationToolStripMenuItem";
+            redownloadApplicationToolStripMenuItem.Size = new Size(202, 22);
+            redownloadApplicationToolStripMenuItem.Text = "Redownload application";
+            redownloadApplicationToolStripMenuItem.Click += redownloadApplicationToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -577,5 +585,6 @@
         private ToolStripMenuItem localeEmulatorToolStripMenuItem;
         private ToolStripMenuItem createShortcutGUIToolStripMenuItem;
         private ToolStripMenuItem ankiToolStripMenuItem;
+        private ToolStripMenuItem redownloadApplicationToolStripMenuItem;
     }
 }
